@@ -5,13 +5,12 @@
  */
 
 import { Binary } from "@kingsword/denokit/binary-install";
-import path from "node:path";
+import * as path from "@std/path";
 import os from "node:os";
-import { fileURLToPath } from "node:url";
 import denoJson from "../deno.json" with {type: "json"}
 
 const windows = "x86_64-pc-windows-msvc";
-const __dirname = path.resolve(fileURLToPath(import.meta.url))
+const __dirname = path.dirname(path.fromFileUrl(import.meta.url))
 
 type ARCH = "x86_64-pc-windows-msvc" | "x86_64-unknown-linux-musl" | "aarch64-unknown-linux-musl" | "x86_64-apple-darwin"
 
@@ -42,9 +41,7 @@ const getBinary = (): Binary => {
   const author = "rustwasm";
   const name = "wasm-pack";
   const url = `https://github.com/${author}/${name}/releases/download/v${version}/${name}-v${version}-${platform}.tar.gz`;
-  return new Binary(platform === windows ? "wasm-pack.exe" : "wasm-pack", url, version, {
-    installDirectory: path.join(__dirname, "binary")
-  });
+  return new Binary(platform === windows ? "wasm-pack.exe" : "wasm-pack", url, version);
 };
 
 /**

@@ -1,6 +1,6 @@
 {
   "name": "@kingsword/wasm-pack",
-  "version": "0.0.1",
+  "version": "0.13.1",
   "description": "📦✨ your favorite rust -> wasm workflow tool!",
   "license": "Apache 2.0 or MIT",
   "exports": {
