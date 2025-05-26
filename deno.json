@@ -1,6 +1,6 @@
 {
   "name": "@kingsword/wasm-pack",
-  "version": "0.13.2",
+  "version": "0.13.3",
   "description": "📦✨ your favorite rust -> wasm workflow tool!",
   "license": "Apache 2.0 or MIT",
   "exports": {
@@ -13,7 +13,7 @@
     "build": "deno run -A build.ts"
   },
   "imports": {
-    "@kingsword/denokit": "jsr:@kingsword/denokit@^0.0.4",
+    "@kingsword/denokit": "jsr:@kingsword/denokit@^0.0.5",
     "@std/path": "jsr:@std/path@^1.0.9"
   },
   "publish": {
