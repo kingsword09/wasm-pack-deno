@@ -5,8 +5,8 @@
  */
 
 import { Binary } from "@kingsword/denokit/binary-install";
+import { which } from "@kingsword/denokit/which";
 import os from "node:os";
-import denoJson from "../deno.json" with { type: "json" };
 
 const windows = "x86_64-pc-windows-msvc";
 
@@ -22,7 +22,8 @@ const getPlatform = (): ARCH => {
 
   // https://github.com/nodejs/node/blob/c3664227a83cf009e9a2e1ddeadbd09c14ae466f/deps/uv/src/win/util.c#L1566-L1573
   if (
-    (type === "Windows_NT" || type.startsWith("MINGW32_NT-")) && arch === "x64"
+    (type === "Windows_NT" || type.startsWith("MINGW32_NT-")) &&
+    arch === "x64"
   ) {
     return windows;
   }
@@ -39,13 +40,23 @@ const getPlatform = (): ARCH => {
   throw new Error(`Unsupported platform: ${type} ${arch}`);
 };
 
+const getVersion = (): string => {
+  const command = new Deno.Command(which.sync("npm") ?? "npm", {
+    args: ["view", "wasm-pack", "--json"],
+    stdin: "inherit",
+  });
+  const output = command.outputSync();
+  const json = JSON.parse(new TextDecoder().decode(output.stdout));
+
+  return json["dist-tags"]["latest"] ?? json.version;
+};
+
 const getBinary = (): Binary => {
   const platform = getPlatform();
-  const version = denoJson.version;
+  const version = getVersion();
   const author = "rustwasm";
   const name = "wasm-pack";
-  const url =
-    `https://github.com/${author}/${name}/releases/download/v${version}/${name}-v${version}-${platform}.tar.gz`;
+  const url = `https://github.com/${author}/${name}/releases/download/v${version}/${name}-v${version}-${platform}.tar.gz`;
   const tempDirPath = Deno.makeTempDirSync({
     prefix: "denokit_binary_install_",
   });
@@ -53,7 +64,7 @@ const getBinary = (): Binary => {
     platform === windows ? "wasm-pack.exe" : "wasm-pack",
     url,
     version,
-    { installDirectory: tempDirPath },
+    { installDirectory: tempDirPath }
   );
 };
 
